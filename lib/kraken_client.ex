@@ -2,17 +2,27 @@ defmodule KrakenClient do
   @moduledoc """
   Documentation for `KrakenClient`.
   """
+  use Tesla
+
+  plug(Tesla.Middleware.BaseUrl, "https://api.kraken.com")
+  plug(Tesla.Middleware.JSON)
 
   @doc """
-  Hello world.
+  Get exchange status
 
   ## Examples
 
-      iex> KrakenClient.hello()
-      :world
+      iex> KrakenClient.status()
+      :online
 
   """
-  def hello do
-    :world
+  def status do
+    {:ok, %Tesla.Env{body: %{"result" => %{"status" => status, "timestamp" => timestamp}}}} =
+      get("/0/public/SystemStatus")
+
+    case(status) do
+      "online" -> :online
+      _ -> {:error, "Kraken returned unknown status: #{status} at #{timestamp} "}
+    end
   end
 end

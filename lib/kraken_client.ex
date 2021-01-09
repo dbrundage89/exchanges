@@ -25,4 +25,9 @@ defmodule KrakenClient do
       _ -> {:error, "Kraken returned unknown status: #{status} at #{timestamp} "}
     end
   end
+
+  def assets do
+    {:ok, %Tesla.Env{body: %{"result" => result}}} = get("/0/public/Assets")
+    Map.keys(result)
+  end
 end

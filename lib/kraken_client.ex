@@ -7,6 +7,8 @@ defmodule KrakenClient do
   plug(Tesla.Middleware.BaseUrl, "https://api.kraken.com")
   plug(Tesla.Middleware.JSON)
 
+  @assets[AssetPair]
+
   @doc """
   Get exchange status
 

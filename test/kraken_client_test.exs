@@ -40,6 +40,89 @@ defmodule KrakenClientTest do
             }
           }
 
+        "https://api.kraken.com/0/public/AssetPairs" ->
+          %Tesla.Env{
+            body: %{
+              "error" => [],
+              "result" => %{
+                "DAIUSD" => %{
+                  "aclass_base" => "currency",
+                  "aclass_quote" => "currency",
+                  "altname" => "DAIUSD",
+                  "base" => "DAI",
+                  "fee_volume_currency" => "ZUSD",
+                  "fees" => [
+                    [0, 0.2],
+                    [50000, 0.16],
+                    [100_000, 0.12],
+                    [250_000, 0.08],
+                    [500_000, 0.04],
+                    [1_000_000, 0]
+                  ],
+                  "fees_maker" => [
+                    [0, 0.2],
+                    [50000, 0.16],
+                    [100_000, 0.12],
+                    [250_000, 0.08],
+                    [500_000, 0.04],
+                    [1_000_000, 0]
+                  ],
+                  "leverage_buy" => [],
+                  "leverage_sell" => [],
+                  "lot" => "unit",
+                  "lot_decimals" => 8,
+                  "lot_multiplier" => 1,
+                  "margin_call" => 80,
+                  "margin_stop" => 40,
+                  "ordermin" => "10",
+                  "pair_decimals" => 5,
+                  "quote" => "ZUSD",
+                  "wsname" => "DAI/USD"
+                },
+                "ADAUSD" => %{
+                  "aclass_base" => "currency",
+                  "aclass_quote" => "currency",
+                  "altname" => "ADAUSD",
+                  "base" => "ADA",
+                  "fee_volume_currency" => "ZUSD",
+                  "fees" => [
+                    [0, 0.26],
+                    [50000, 0.24],
+                    [100_000, 0.22],
+                    [250_000, 0.2],
+                    [500_000, 0.18],
+                    [1_000_000, 0.16],
+                    [2_500_000, 0.14],
+                    [5_000_000, 0.12],
+                    [10_000_000, 0.1]
+                  ],
+                  "fees_maker" => [
+                    [0, 0.16],
+                    [50000, 0.14],
+                    [100_000, 0.12],
+                    [250_000, 0.1],
+                    [500_000, 0.08],
+                    [1_000_000, 0.06],
+                    [2_500_000, 0.04],
+                    [5_000_000, 0.02],
+                    [10_000_000, 0]
+                  ],
+                  "leverage_buy" => [2, 3],
+                  "leverage_sell" => [2, 3],
+                  "lot" => "unit",
+                  "lot_decimals" => 8,
+                  "lot_multiplier" => 1,
+                  "margin_call" => 80,
+                  "margin_stop" => 40,
+                  "ordermin" => "50",
+                  "pair_decimals" => 6,
+                  "quote" => "ZUSD",
+                  "wsname" => "ADA/USD"
+                }
+              }
+            }
+          }
+
         _ ->
           %Tesla.Env{status: 404, body: "NotFound"}
       end
@@ -56,7 +139,7 @@ defmodule KrakenClientTest do
     assert KrakenClient.assets() == ["EUR.HOLD", "KAVA.S", "REPV2"]
   end
 
-  test "pairs returns available trading pairs" do
-    assert KrakenClient.pairs() == ["BTCUSD", "ETHBTC", "ETHUSD"]
+  test "assetPairs returns available trading pairs" do
+    assert KrakenClient.assetPairs() == [%AssetPair{}]
   end
 end

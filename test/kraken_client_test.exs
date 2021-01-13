@@ -140,6 +140,42 @@ defmodule KrakenClientTest do
   end
 
   test "assetPairs returns available trading pairs" do
-    assert KrakenClient.assetPairs() == [%AssetPair{}]
+    assert KrakenClient.assetPairs() == [
+             %{
+               name: "ADAUSD",
+               base: "ADA",
+               fees: [
+                 [0, 0.26],
+                 [50000, 0.24],
+                 [100_000, 0.22],
+                 [250_000, 0.2],
+                 [500_000, 0.18],
+                 [1_000_000, 0.16],
+                 [2_500_000, 0.14],
+                 [5_000_000, 0.12],
+                 [10_000_000, 0.1]
+               ],
+               lot_stepSize: 0.00000001,
+               ordermin: "50",
+               price_stepSize: 0.000001,
+               quote: "ZUSD"
+             },
+             %{
+               name: "DAIUSD",
+               base: "DAI",
+               fees: [
+                 [0, 0.2],
+                 [50000, 0.16],
+                 [100_000, 0.12],
+                 [250_000, 0.08],
+                 [500_000, 0.04],
+                 [1_000_000, 0]
+               ],
+               lot_stepSize: 0.00000001,
+               ordermin: "10",
+               price_stepSize: 0.00001,
+               quote: "ZUSD"
+             }
+           ]
   end
 end

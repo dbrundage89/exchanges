@@ -7,17 +7,10 @@ defmodule KrakenClient do
   plug(Tesla.Middleware.BaseUrl, "https://api.kraken.com")
   plug(Tesla.Middleware.JSON)
 
-  @assets[AssetPair]
+  defp get_results({:ok, %Tesla.Env{body: %{"result" => result}}}) do
+    result
+  end
 
-  @doc """
-  Get exchange status
-
-  ## Examples
-
-      iex> KrakenClient.status()
-      :online
-
-  """
   def status do
     {:ok, %Tesla.Env{body: %{"result" => %{"status" => status, "timestamp" => timestamp}}}} =
       get("/0/public/SystemStatus")
@@ -29,7 +22,25 @@ defmodule KrakenClient do
   end
 
   def assets do
-    {:ok, %Tesla.Env{body: %{"result" => result}}} = get("/0/public/Assets")
-    Map.keys(result)
+    get("/0/public/Assets")
+    |> get_results
+    |> Map.keys()
+  end
+
+  def assetPairs() do
+    get("/0/public/AssetPairs")
+    |> get_results
+    |> Enum.map(fn {name, pair} -> Map.merge(%{"name" => name}, pair) end)
+    |> Enum.map(fn asset ->
+      %{
+        name: asset["name"],
+        base: asset["base"],
+        quote: asset["quote"],
+        fees: asset["fees"],
+        ordermin: asset["ordermin"],
+        price_stepSize: :math.pow(10, -1 * asset["pair_decimals"]),
+        lot_stepSize: :math.pow(10, -1 * asset["lot_decimals"])
+      }
+    end)
   end
 end

@@ -1,6 +1,7 @@
-defmodule KrakenClientTest do
+defmodule Exchanges.KrakenClientTest do
   use ExUnit.Case
-  doctest KrakenClient
+  # doctest Exchanges.KrakenClient - todo: research what this is?
+  alias Exchanges.KrakenClient
 
   setup do
     Tesla.Mock.mock(fn env ->

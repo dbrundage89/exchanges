@@ -1,6 +1,6 @@
-defmodule KrakenClient do
+defmodule Exchanges.KrakenClient do
   @moduledoc """
-  Documentation for `KrakenClient`.
+  Documentation for `Exchanges.KrakenClient`.
   """
   use Tesla
 

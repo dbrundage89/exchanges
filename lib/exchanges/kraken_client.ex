@@ -17,7 +17,7 @@ defmodule Exchanges.KrakenClient do
 
     case(status) do
       "online" -> :online
-      _ -> {:error, "Kraken returned unknown status: #{status} at #{timestamp} "}
+      _ -> {:error, "Kraken returned unknown internal status: #{status} at #{timestamp} "}
     end
   end
 
@@ -36,8 +36,7 @@ defmodule Exchanges.KrakenClient do
         name: asset["name"],
         base: asset["base"],
         quote: asset["quote"],
-        fees: asset["fees"],
-        ordermin: asset["ordermin"],
+        ordermin: with({number, _} <- Float.parse(asset["ordermin"]), do: number),
         price_stepSize: :math.pow(10, -1 * asset["pair_decimals"]),
         lot_stepSize: :math.pow(10, -1 * asset["lot_decimals"])
       }

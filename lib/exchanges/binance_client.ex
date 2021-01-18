@@ -21,6 +21,14 @@ defmodule Exchanges.BinanceClient do
   end
 
   def assets do
+    get("/api/v3/exchangeInfo")
+    |> get_body()
+    |> (fn %{"symbols" => symbols} -> symbols end).()
+    |> Enum.reduce([], fn assetPair, acc ->
+      acc ++ [assetPair["quoteAsset"], assetPair["baseAsset"]]
+    end)
+    |> Enum.sort()
+    |> Enum.uniq()
   end
 
   defp assetPair_filterItem(assetPair, filterType, itemName) do

@@ -160,7 +160,7 @@ defmodule Exchanges.BinanceClientTest do
   end
 
   test "assets returns available assets" do
-    assert BinanceClient.assets() == ["BTC, ETH, DAI"]
+    assert BinanceClient.assets() == ["BTC", "ETH", "LTC"]
   end
 
   test "assetPairs returns available trading pairs" do

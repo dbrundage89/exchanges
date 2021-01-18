@@ -23,30 +23,25 @@ defmodule Exchanges.BinanceClient do
   def assets do
   end
 
+  defp assetPair_filterItem(assetPair, filterType, itemName) do
+    assetPair["filters"]
+    |> Enum.filter(fn item -> item["filterType"] == filterType end)
+    |> Enum.at(0)
+    |> (&with({number, _} <- Float.parse(&1[itemName]), do: number)).()
+  end
+
   def assetPairs do
     get("/api/v3/exchangeInfo")
     |> get_body()
     |> (fn %{"symbols" => symbols} -> symbols end).()
-    |> Enum.map(fn asset ->
+    |> Enum.map(fn assetPair ->
       %{
-        name: asset["symbol"],
-        base: asset["baseAsset"],
-        quote: asset["quoteAsset"],
-        ordermin:
-          asset["filters"]
-          |> Enum.filter(fn item -> item["filterType"] == "LOT_SIZE" end)
-          |> Enum.at(0)
-          |> (&with({number, _} <- Float.parse(&1["minQty"]), do: number)).(),
-        price_stepSize:
-          asset["filters"]
-          |> Enum.filter(fn item -> item["filterType"] == "PRICE_FILTER" end)
-          |> Enum.at(0)
-          |> (&with({number, _} <- Float.parse(&1["tickSize"]), do: number)).(),
-        lot_stepSize:
-          asset["filters"]
-          |> Enum.filter(fn item -> item["filterType"] == "LOT_SIZE" end)
-          |> Enum.at(0)
-          |> (&with({number, _} <- Float.parse(&1["stepSize"]), do: number)).()
+        name: assetPair["symbol"],
+        base: assetPair["baseAsset"],
+        quote: assetPair["quoteAsset"],
+        ordermin: assetPair_filterItem(assetPair, "LOT_SIZE", "minQty"),
+        price_stepSize: assetPair_filterItem(assetPair, "PRICE_FILTER", "tickSize"),
+        lot_stepSize: assetPair_filterItem(assetPair, "LOT_SIZE", "stepSize")
       }
     end)
   end

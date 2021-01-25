@@ -5,7 +5,9 @@ defmodule Exchanges.BinanceClient do
   use Tesla
 
   plug(Tesla.Middleware.BaseUrl, "https://api.binance.us")
-  plug(Tesla.Middleware.JSON)
+  plug(Tesla.Middleware.JSON, engine_opts: [keys: :atoms])
+
+  alias Exchanges.Resource
 
   defp get_body({:ok, %Tesla.Env{body: body}}) do
     body
@@ -23,34 +25,23 @@ defmodule Exchanges.BinanceClient do
   def assets do
     get("/api/v3/exchangeInfo")
     |> get_body()
-    |> (fn %{"symbols" => symbols} -> symbols end).()
+    |> (& &1[:symbols]).()
     |> Enum.reduce([], fn assetPair, acc ->
-      acc ++ [assetPair["quoteAsset"], assetPair["baseAsset"]]
+      acc ++ [assetPair[:quoteAsset], assetPair[:baseAsset]]
     end)
-    |> Enum.sort()
     |> Enum.uniq()
   end
 
-  defp assetPair_filterItem(assetPair, filterType, itemName) do
-    assetPair["filters"]
-    |> Enum.filter(fn item -> item["filterType"] == filterType end)
-    |> Enum.at(0)
-    |> (&with({number, _} <- Float.parse(&1[itemName]), do: number)).()
-  end
-
-  def assetPairs do
+  def asset_pairs do
     get("/api/v3/exchangeInfo")
     |> get_body()
-    |> (fn %{"symbols" => symbols} -> symbols end).()
-    |> Enum.map(fn assetPair ->
-      %{
-        name: assetPair["symbol"],
-        base: assetPair["baseAsset"],
-        quote: assetPair["quoteAsset"],
-        ordermin: assetPair_filterItem(assetPair, "LOT_SIZE", "minQty"),
-        price_stepSize: assetPair_filterItem(assetPair, "PRICE_FILTER", "tickSize"),
-        lot_stepSize: assetPair_filterItem(assetPair, "LOT_SIZE", "stepSize")
-      }
-    end)
+    |> (& &1[:symbols]).()
+    |> Enum.map(fn asset_pair -> Resource.AssetPair.from_binance(asset_pair) end)
+  end
+
+  def prices do
+    get("/api/v3/ticker/price")
+    |> get_body()
+    |> Enum.map(fn price -> Resource.Price.from_binance(price) end)
   end
 end

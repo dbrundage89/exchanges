@@ -30,10 +30,10 @@ defmodule Exchanges.KrakenClient do
   def assetPairs() do
     get("/0/public/AssetPairs")
     |> get_results
-    |> Enum.map(fn {name, pair} -> Map.merge(%{"name" => name}, pair) end)
+    |> Enum.map(fn {symbol, pair} -> Map.merge(%{"symbol" => symbol}, pair) end)
     |> Enum.map(fn asset ->
       %{
-        name: asset["name"],
+        symbol: asset["symbol"],
         base: asset["base"],
         quote: asset["quote"],
         ordermin: with({number, _} <- Float.parse(asset["ordermin"]), do: number),

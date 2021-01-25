@@ -143,7 +143,7 @@ defmodule Exchanges.KrakenClientTest do
   test "assetPairs returns available trading pairs" do
     assert KrakenClient.assetPairs() == [
              %{
-               name: "ADAUSD",
+               symbol: "ADAUSD",
                base: "ADA",
                lot_stepSize: 0.00000001,
                ordermin: 50,
@@ -151,7 +151,7 @@ defmodule Exchanges.KrakenClientTest do
                quote: "ZUSD"
              },
              %{
-               name: "DAIUSD",
+               symbol: "DAIUSD",
                base: "DAI",
                lot_stepSize: 0.00000001,
                ordermin: 10,

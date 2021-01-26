@@ -13,6 +13,12 @@ defmodule Exchanges.Resource.AssetPair do
     |> (&with({number, _} <- Float.parse(&1[item_name]), do: number)).()
   end
 
+  defp string_to_float(nil), do: 0
+
+  defp string_to_float(string) do
+    with({number, _} <- Float.parse(string), do: number)
+  end
+
   def from_binance(asset_pair) do
     %Exchanges.Resource.AssetPair{
       symbol: asset_pair[:symbol],
@@ -29,7 +35,7 @@ defmodule Exchanges.Resource.AssetPair do
       symbol: asset_pair[:symbol],
       base: asset_pair[:base],
       quote: asset_pair[:quote],
-      ordermin: with({number, _} <- Float.parse(asset_pair[:ordermin]), do: number),
+      ordermin: string_to_float(asset_pair[:ordermin]),
       price_stepsize: :math.pow(10, -1 * asset_pair[:pair_decimals]),
       lot_stepsize: :math.pow(10, -1 * asset_pair[:lot_decimals])
     }

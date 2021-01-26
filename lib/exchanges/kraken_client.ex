@@ -34,7 +34,7 @@ defmodule Exchanges.KrakenClient do
     |> Enum.map(fn asset -> Atom.to_string(asset) end)
   end
 
-  def assetPairs() do
+  def asset_pairs() do
     get("/0/public/AssetPairs")
     |> get_results
     |> Enum.map(fn {symbol, pair} -> Map.merge(%{symbol: symbol}, pair) end)

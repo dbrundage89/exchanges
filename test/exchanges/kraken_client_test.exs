@@ -122,7 +122,6 @@ defmodule Exchanges.KrakenClientTest do
                   lot_multiplier: 1,
                   margin_call: 80,
                   margin_stop: 40,
-                  ordermin: "0.3",
                   pair_decimals: 3,
                   quote: "ZUSD",
                   wsname: "REP/USD"
@@ -148,7 +147,7 @@ defmodule Exchanges.KrakenClientTest do
   end
 
   test "assetPairs returns available trading pairs" do
-    assert KrakenClient.assetPairs() == [
+    assert KrakenClient.asset_pairs() == [
              %Exchanges.Resource.AssetPair{
                base: "ADA",
                lot_stepsize: 0.0001,
@@ -160,7 +159,7 @@ defmodule Exchanges.KrakenClientTest do
              %Exchanges.Resource.AssetPair{
                base: "XREP",
                lot_stepsize: 1.0e-8,
-               ordermin: 0.3,
+               ordermin: 0,
                price_stepsize: 0.001,
                quote: "ZUSD",
                symbol: :XREPZUSD

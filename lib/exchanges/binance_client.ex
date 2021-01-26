@@ -44,4 +44,10 @@ defmodule Exchanges.BinanceClient do
     |> get_body()
     |> Enum.map(fn price -> Resource.Price.from_binance(price) end)
   end
+
+  def ohlc(symbol, interval) do
+    get("/api/v3/klines?symbol=" <> symbol <> "&interval=" <> interval)
+    |> get_body()
+    |> Enum.map(fn kline -> Resource.OHLC.from_binance(kline) end)
+  end
 end

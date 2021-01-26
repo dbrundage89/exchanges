@@ -13,10 +13,6 @@ defmodule Exchanges.KrakenClient do
     result
   end
 
-  def get_url(url) do
-    get(url)
-  end
-
   def status do
     {:ok, %Tesla.Env{body: %{result: %{status: status, timestamp: timestamp}}}} =
       get("/0/public/SystemStatus")

@@ -171,6 +171,42 @@ defmodule Exchanges.BinanceClientTest do
             ]
           }
 
+        "https://api.binance.us/api/v3/klines?symbol=BTCUSD&interval=1m" ->
+          %Tesla.Env{
+            __client__: %Tesla.Client{adapter: nil, fun: nil, post: [], pre: []},
+            __module__: Exchanges.BinanceClient,
+            body: [
+              [
+                1_611_660_420_000,
+                "31940.6600",
+                "31940.6600",
+                "31895.9200",
+                "31926.3700",
+                "0.32096200",
+                1_611_660_479_999,
+                "10240.5104",
+                18,
+                "0.02428400",
+                "774.8209",
+                "0"
+              ],
+              [
+                1_611_660_480_000,
+                "31922.8600",
+                "31948.1400",
+                "31922.8600",
+                "31934.1100",
+                "0.02782800",
+                1_611_660_539_999,
+                "888.7111",
+                7,
+                "0.01651400",
+                "527.3238",
+                "0"
+              ]
+            ]
+          }
+
         _ ->
           %Tesla.Env{status: 404, body: "NotFound"}
       end
@@ -214,6 +250,37 @@ defmodule Exchanges.BinanceClientTest do
              %Resource.Price{:price => "1239.7400", :symbol => "ETHUSD"},
              %Resource.Price{:price => "0.2970", :symbol => "XRPUSD"},
              %Resource.Price{:price => "495.2400", :symbol => "BCHUSD"}
+           ]
+  end
+
+  test "ohlc called with BTCUSD and 1m returns 1m ohlc data" do
+    assert BinanceClient.ohlc("BTCUSD", "1m") == [
+             %Resource.OHLC{
+               open_time: 1_611_660_420_000,
+               open: "31940.6600",
+               high: "31940.6600",
+               low: "31895.9200",
+               close: "31926.3700",
+               volume: "0.32096200",
+               close_time: 1_611_660_479_999,
+               quote_asset_volume: "10240.5104",
+               number_of_trades: 18,
+               taker_buy_base_asset_volume: "0.02428400",
+               taker_buy_quote_asset_volume: "774.8209"
+             },
+             %Resource.OHLC{
+               open_time: 1_611_660_480_000,
+               open: "31922.8600",
+               high: "31948.1400",
+               low: "31922.8600",
+               close: "31934.1100",
+               volume: "0.02782800",
+               close_time: 1_611_660_539_999,
+               quote_asset_volume: "888.7111",
+               number_of_trades: 7,
+               taker_buy_base_asset_volume: "0.01651400",
+               taker_buy_quote_asset_volume: "527.3238"
+             }
            ]
   end
 end

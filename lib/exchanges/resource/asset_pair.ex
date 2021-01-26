@@ -31,13 +31,15 @@ defmodule Exchanges.Resource.AssetPair do
   end
 
   def from_kraken(asset_pair) do
+    {symbol, pair} = asset_pair
+
     %Exchanges.Resource.AssetPair{
-      symbol: asset_pair[:symbol],
-      base: asset_pair[:base],
-      quote: asset_pair[:quote],
-      ordermin: string_to_float(asset_pair[:ordermin]),
-      price_stepsize: :math.pow(10, -1 * asset_pair[:pair_decimals]),
-      lot_stepsize: :math.pow(10, -1 * asset_pair[:lot_decimals])
+      symbol: Atom.to_string(symbol),
+      base: pair[:base],
+      quote: pair[:quote],
+      ordermin: string_to_float(pair[:ordermin]),
+      price_stepsize: :math.pow(10, -1 * pair[:pair_decimals]),
+      lot_stepsize: :math.pow(10, -1 * pair[:lot_decimals])
     }
   end
 end

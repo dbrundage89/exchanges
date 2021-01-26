@@ -154,7 +154,7 @@ defmodule Exchanges.KrakenClientTest do
                ordermin: 50.0,
                price_stepsize: 0.001,
                quote: "ZUSD",
-               symbol: :ADAUSD
+               symbol: "ADAUSD"
              },
              %Exchanges.Resource.AssetPair{
                base: "XREP",
@@ -162,7 +162,7 @@ defmodule Exchanges.KrakenClientTest do
                ordermin: 0,
                price_stepsize: 0.001,
                quote: "ZUSD",
-               symbol: :XREPZUSD
+               symbol: "XREPZUSD"
              }
            ]
   end

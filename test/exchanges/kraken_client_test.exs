@@ -2,6 +2,7 @@ defmodule Exchanges.KrakenClientTest do
   use ExUnit.Case
   # doctest Exchanges.KrakenClient - todo: research what this is?
   alias Exchanges.KrakenClient
+  alias Exchanges.Resource
 
   setup do
     Tesla.Mock.mock(fn env ->
@@ -9,33 +10,33 @@ defmodule Exchanges.KrakenClientTest do
         "https://api.kraken.com/0/public/SystemStatus" ->
           %Tesla.Env{
             body: %{
-              "error" => [],
-              "result" => %{"status" => "online", "timestamp" => "2021-01-08T22:41:56Z"}
+              error: [],
+              result: %{status: "online", timestamp: "2021-01-26T14:58:01Z"}
             }
           }
 
         "https://api.kraken.com/0/public/Assets" ->
           %Tesla.Env{
             body: %{
-              "error" => [],
-              "result" => %{
-                "REPV2" => %{
-                  "aclass" => "currency",
-                  "altname" => "REPV2",
-                  "decimals" => 10,
-                  "display_decimals" => 5
+              error: [],
+              result: %{
+                "USD.M7": %{
+                  aclass: "currency",
+                  altname: "USD.M7",
+                  decimals: 4,
+                  display_decimals: 4
                 },
-                "KAVA.S" => %{
-                  "aclass" => "currency",
-                  "altname" => "KAVA.S",
-                  "decimals" => 8,
-                  "display_decimals" => 6
+                ICX: %{
+                  aclass: "currency",
+                  altname: "ICX",
+                  decimals: 10,
+                  display_decimals: 5
                 },
-                "EUR.HOLD" => %{
-                  "aclass" => "currency",
-                  "altname" => "EUR.HOLD",
-                  "decimals" => 4,
-                  "display_decimals" => 2
+                ANT: %{
+                  aclass: "currency",
+                  altname: "ANT",
+                  decimals: 10,
+                  display_decimals: 5
                 }
               }
             }
@@ -44,49 +45,15 @@ defmodule Exchanges.KrakenClientTest do
         "https://api.kraken.com/0/public/AssetPairs" ->
           %Tesla.Env{
             body: %{
-              "error" => [],
-              "result" => %{
-                "DAIUSD" => %{
-                  "aclass_base" => "currency",
-                  "aclass_quote" => "currency",
-                  "altname" => "DAIUSD",
-                  "base" => "DAI",
-                  "fee_volume_currency" => "ZUSD",
-                  "fees" => [
-                    [0, 0.2],
-                    [50000, 0.16],
-                    [100_000, 0.12],
-                    [250_000, 0.08],
-                    [500_000, 0.04],
-                    [1_000_000, 0]
-                  ],
-                  "fees_maker" => [
-                    [0, 0.2],
-                    [50000, 0.16],
-                    [100_000, 0.12],
-                    [250_000, 0.08],
-                    [500_000, 0.04],
-                    [1_000_000, 0]
-                  ],
-                  "leverage_buy" => [],
-                  "leverage_sell" => [],
-                  "lot" => "unit",
-                  "lot_decimals" => 8,
-                  "lot_multiplier" => 1,
-                  "margin_call" => 80,
-                  "margin_stop" => 40,
-                  "ordermin" => "10",
-                  "pair_decimals" => 5,
-                  "quote" => "ZUSD",
-                  "wsname" => "DAI/USD"
-                },
-                "ADAUSD" => %{
-                  "aclass_base" => "currency",
-                  "aclass_quote" => "currency",
-                  "altname" => "ADAUSD",
-                  "base" => "ADA",
-                  "fee_volume_currency" => "ZUSD",
-                  "fees" => [
+              error: [],
+              result: %{
+                ADAUSD: %{
+                  aclass_base: "currency",
+                  aclass_quote: "currency",
+                  altname: "ADAUSD",
+                  base: "ADA",
+                  fee_volume_currency: "ZUSD",
+                  fees: [
                     [0, 0.26],
                     [50000, 0.24],
                     [100_000, 0.22],
@@ -97,7 +64,7 @@ defmodule Exchanges.KrakenClientTest do
                     [5_000_000, 0.12],
                     [10_000_000, 0.1]
                   ],
-                  "fees_maker" => [
+                  fees_maker: [
                     [0, 0.16],
                     [50000, 0.14],
                     [100_000, 0.12],
@@ -108,17 +75,57 @@ defmodule Exchanges.KrakenClientTest do
                     [5_000_000, 0.02],
                     [10_000_000, 0]
                   ],
-                  "leverage_buy" => [2, 3],
-                  "leverage_sell" => [2, 3],
-                  "lot" => "unit",
-                  "lot_decimals" => 8,
-                  "lot_multiplier" => 1,
-                  "margin_call" => 80,
-                  "margin_stop" => 40,
-                  "ordermin" => "50",
-                  "pair_decimals" => 6,
-                  "quote" => "ZUSD",
-                  "wsname" => "ADA/USD"
+                  leverage_buy: [],
+                  leverage_sell: [],
+                  lot: "unit",
+                  lot_decimals: 4,
+                  lot_multiplier: 1,
+                  margin_call: 80,
+                  margin_stop: 40,
+                  ordermin: "50",
+                  pair_decimals: 3,
+                  quote: "ZUSD",
+                  wsname: "REPV2/USD"
+                },
+                XREPZUSD: %{
+                  aclass_base: "currency",
+                  aclass_quote: "currency",
+                  altname: "REPUSD",
+                  base: "XREP",
+                  fee_volume_currency: "ZUSD",
+                  fees: [
+                    [0, 0.26],
+                    [50000, 0.24],
+                    [100_000, 0.22],
+                    [250_000, 0.2],
+                    [500_000, 0.18],
+                    [1_000_000, 0.16],
+                    [2_500_000, 0.14],
+                    [5_000_000, 0.12],
+                    [10_000_000, 0.1]
+                  ],
+                  fees_maker: [
+                    [0, 0.16],
+                    [50000, 0.14],
+                    [100_000, 0.12],
+                    [250_000, 0.1],
+                    [500_000, 0.08],
+                    [1_000_000, 0.06],
+                    [2_500_000, 0.04],
+                    [5_000_000, 0.02],
+                    [10_000_000, 0]
+                  ],
+                  leverage_buy: [],
+                  leverage_sell: [],
+                  lot: "unit",
+                  lot_decimals: 8,
+                  lot_multiplier: 1,
+                  margin_call: 80,
+                  margin_stop: 40,
+                  ordermin: "0.3",
+                  pair_decimals: 3,
+                  quote: "ZUSD",
+                  wsname: "REP/USD"
                 }
               }
             }
@@ -137,26 +144,26 @@ defmodule Exchanges.KrakenClientTest do
   end
 
   test "assets returns available assets" do
-    assert KrakenClient.assets() == ["EUR.HOLD", "KAVA.S", "REPV2"]
+    assert KrakenClient.assets() == ["ANT", "ICX", "USD.M7"]
   end
 
   test "assetPairs returns available trading pairs" do
     assert KrakenClient.assetPairs() == [
-             %{
-               symbol: "ADAUSD",
+             %Exchanges.Resource.AssetPair{
                base: "ADA",
-               lot_stepSize: 0.00000001,
-               ordermin: 50,
-               price_stepSize: 0.000001,
-               quote: "ZUSD"
+               lot_stepsize: 0.0001,
+               ordermin: 50.0,
+               price_stepsize: 0.001,
+               quote: "ZUSD",
+               symbol: :ADAUSD
              },
-             %{
-               symbol: "DAIUSD",
-               base: "DAI",
-               lot_stepSize: 0.00000001,
-               ordermin: 10,
-               price_stepSize: 0.00001,
-               quote: "ZUSD"
+             %Exchanges.Resource.AssetPair{
+               base: "XREP",
+               lot_stepsize: 1.0e-8,
+               ordermin: 0.3,
+               price_stepsize: 0.001,
+               quote: "ZUSD",
+               symbol: :XREPZUSD
              }
            ]
   end

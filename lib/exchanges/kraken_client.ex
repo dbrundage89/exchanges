@@ -5,14 +5,20 @@ defmodule Exchanges.KrakenClient do
   use Tesla
 
   plug(Tesla.Middleware.BaseUrl, "https://api.kraken.com")
-  plug(Tesla.Middleware.JSON)
+  plug(Tesla.Middleware.JSON, engine_opts: [keys: :atoms])
 
-  defp get_results({:ok, %Tesla.Env{body: %{"result" => result}}}) do
+  alias Exchanges.Resource
+
+  defp get_results({:ok, %Tesla.Env{body: %{result: result}}}) do
     result
   end
 
+  def get_url(url) do
+    get(url)
+  end
+
   def status do
-    {:ok, %Tesla.Env{body: %{"result" => %{"status" => status, "timestamp" => timestamp}}}} =
+    {:ok, %Tesla.Env{body: %{result: %{status: status, timestamp: timestamp}}}} =
       get("/0/public/SystemStatus")
 
     case(status) do
@@ -25,21 +31,15 @@ defmodule Exchanges.KrakenClient do
     get("/0/public/Assets")
     |> get_results
     |> Map.keys()
+    |> Enum.map(fn asset -> Atom.to_string(asset) end)
   end
 
   def assetPairs() do
     get("/0/public/AssetPairs")
     |> get_results
-    |> Enum.map(fn {symbol, pair} -> Map.merge(%{"symbol" => symbol}, pair) end)
-    |> Enum.map(fn asset ->
-      %{
-        symbol: asset["symbol"],
-        base: asset["base"],
-        quote: asset["quote"],
-        ordermin: with({number, _} <- Float.parse(asset["ordermin"]), do: number),
-        price_stepSize: :math.pow(10, -1 * asset["pair_decimals"]),
-        lot_stepSize: :math.pow(10, -1 * asset["lot_decimals"])
-      }
+    |> Enum.map(fn {symbol, pair} -> Map.merge(%{symbol: symbol}, pair) end)
+    |> Enum.map(fn asset_pair ->
+      Resource.AssetPair.from_kraken(asset_pair)
     end)
   end
 end

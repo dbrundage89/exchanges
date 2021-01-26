@@ -23,4 +23,15 @@ defmodule Exchanges.Resource.AssetPair do
       lot_stepsize: asset_pair.filters |> get_filter_item("LOT_SIZE", :stepSize)
     }
   end
+
+  def from_kraken(asset_pair) do
+    %Exchanges.Resource.AssetPair{
+      symbol: asset_pair[:symbol],
+      base: asset_pair[:base],
+      quote: asset_pair[:quote],
+      ordermin: with({number, _} <- Float.parse(asset_pair[:ordermin]), do: number),
+      price_stepsize: :math.pow(10, -1 * asset_pair[:pair_decimals]),
+      lot_stepsize: :math.pow(10, -1 * asset_pair[:lot_decimals])
+    }
+  end
 end

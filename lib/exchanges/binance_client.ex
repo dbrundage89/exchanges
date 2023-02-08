@@ -45,6 +45,10 @@ defmodule Exchanges.BinanceClient do
     |> Enum.map(fn price -> Resource.Price.from_binance(price) end)
   end
 
+  @doc """
+    Intervals
+      1m, 3m, 5m, 15m, 30m, 1h, 2h, 4h, 6h, 8h, 12h, 1d, 3d, 1w, 1M
+  """
   def ohlc(symbol, interval) do
     get("/api/v3/klines?symbol=" <> symbol <> "&interval=" <> interval)
     |> get_body()

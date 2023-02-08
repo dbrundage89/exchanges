@@ -6,6 +6,7 @@ defmodule Exchanges.Resource.AssetPair do
             price_stepsize: nil,
             lot_stepsize: nil
 
+  # todo research streams
   defp get_filter_item(filters, filter_type, item_name) do
     filters
     |> Enum.filter(fn item -> item[:filterType] == filter_type end)
@@ -15,7 +16,7 @@ defmodule Exchanges.Resource.AssetPair do
 
   defp string_to_float(nil), do: 0
 
-  defp string_to_float(string) do
+  defp string_to_float(string) when is_binary(string) do
     with({number, _} <- Float.parse(string), do: number)
   end
 
